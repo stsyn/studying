@@ -1,0 +1,263 @@
+<html>
+	<meta charset="utf-8">
+	<script src="inferno.min.js"></script>
+	<script src="inferno-create-element.min.js"></script>
+	<style>
+		table, input{width:100%}
+		input[type='text'] {height:100%; background:#fff; border:none; color:#000}
+		td {border-color:#bbb; background:#ddd; color:#222}
+	</style>
+	<body>
+		<input type="button" value="Сохранить" onClick="save()"></input>
+		<input type="button" value="Минимумы и максимумы" onClick="minmaxs()"></input>
+		<div id="contInput">
+		</div>
+	</body>
+	<script>
+		let cc = {
+			maxA:4,
+			F:4,
+			C:4,
+			maxR:5
+		};
+		
+		let cc2 = ['Минимум', 'Максимум', 'Издержка (0/1)']
+		
+		function inp(val, ll, iv) {
+			console.log(iv);
+			val[ll] = iv.value;
+		}
+		
+		function addInput(val, ll) {
+			return Inferno.createElement('input',{type:'text',value:val[ll], onChange:function(e) {inp(val, ll, e.target)}, onPaste:function(e) {inp(val, ll, e.target)}, onInput:function(e) {inp(val, ll, e.target)}},);
+		}
+		
+		function renderTable(content) {
+			let tt = [];
+			for (let i=0; i<content.height; i++) {
+				let t = [];
+				for (let j=0; j<content.width; j++) {
+					let isEdit = (i>0&&j>0&&content.editable);
+					if (content.editAlmostAll && !((content.u.length>0 && i == 0) && (content.l.length>0 && j == 0))) isEdit = true;
+					if (content.editAll) isEdit = true;
+					
+					if ((content.u.length>0 && i == 0) && (content.l.length>0 && j == 0)) {
+						t.push(Inferno.createElement('td',{style:'width:'+100/content.width+'%;background:#ccc'},
+							Inferno.createElement('span',{style:'font-size:120%'},content.n)
+						));
+					}
+					else if (content.u.length>0 && i == 0) {
+						t.push(Inferno.createElement('td',{style:'width:'+100/content.width+'%;background:#ccc'},
+							Inferno.createElement('b',{},content.u[j-(content.l.length>0?1:0)])
+						));
+					}
+					else if (content.l.length>0 && j == 0) {
+						t.push(Inferno.createElement('td',{style:'width:'+100/content.width+'%;background:#ccc'},
+							Inferno.createElement('b',{},content.l[i-(content.u.length>0?1:0)])
+						));
+					}
+					else {
+						let x = i - (content.u.length>0?1:0);
+						let y = j - (content.l.length>0?1:0);
+						t.push(Inferno.createElement('td',{style:'width:'+100/content.width+'%'},(isEdit?
+							addInput(content.c[x], y)
+						:content.c[x][y])));
+					}
+				}
+				tt.push(Inferno.createElement('tr',{},t));
+			}
+			return Inferno.createElement('table',{cellspacing:0, border:1},tt);
+		}
+		
+		function save() {
+			localStorage.nns = JSON.stringify(names);
+			localStorage.crit = JSON.stringify(critters);
+			localStorage.vals = JSON.stringify(vals);
+			localStorage.mms = JSON.stringify(mms);
+			
+			location.reload();
+		}
+		
+		function read(id) {
+			let v;
+			try {
+				v = JSON.parse(localStorage[id]);
+			}
+			catch (e) {
+				v = [];
+			}
+			return v;
+		}
+		
+		function minmaxs() {
+			for (let i=0; i<cc.F; i++) {
+				for (let j=0; j<cc.C; j++) {
+					let min = parseFloat(vals[i][0][j]);
+					let max = parseFloat(vals[i][0][j]);
+					for (let k=1; k<cc.maxA; k++) {
+						if (min>vals[i][k][j]) min = parseFloat(vals[i][k][j]);
+						if (max<vals[i][k][j]) max = parseFloat(vals[i][k][j]);
+					}
+					console.log(i,j);
+					mms[i][0][j] = min;
+					mms[i][1][j] = max;
+				}
+			}
+			save();
+		}
+		
+		let names= read('nns');
+		if (names.length == 0) {
+			for (let i=0; i<cc.F; i++) names.push([]);
+		}
+		
+		let critters= read('crit');
+		if (critters.length == 0) {
+			for (let i=0; i<cc.C; i++) critters.push([]);
+		}
+		
+		let vals= read('vals');
+		if (vals.length == 0) {
+			for (let j=0; j<cc.F; j++) {
+				vals.push([]);
+				for (let i=0; i<cc.maxA; i++) {
+					vals[vals.length-1].push([]);
+				}
+			}
+		}
+		
+		let mms= read('mms');
+		if (mms.length == 0) {
+			for (let j=0; j<cc.F; j++) {
+				mms.push([]);
+				for (let i=0; i<cc.C; i++) {
+					mms[mms.length-1].push([]);
+				}
+			}
+		}
+		
+		let temp = [[[],[],[],[]],[[],[],[],[]],[[],[],[],[]],[[],[],[],[]]];
+		try {
+			//получение относительных
+			for (let i=0; i<cc.F; i++) {
+				for (let j=0; j<cc.maxA; j++) {
+					for (let k=0; k<cc.C; k++) {
+						temp[i][j][k] = ((parseFloat(vals[i][j][k]) - parseFloat(mms[i][0][k]))/(parseFloat(mms[i][1][k]) - parseFloat(mms[i][0][k]) + 0.000001)).toFixed(3);
+						temp[i][j][k] = parseFloat(temp[i][j][k]);
+						if (temp[i][j][k] > 1) temp[i][j][k] = 1;
+						if (temp[i][j][k] < 0) temp[i][j][k] = 0;
+					}
+				}
+			}
+		}
+		catch(ex) {
+		}
+		
+		let xres;
+		try {
+			let ress = [];
+			{
+				//вариантов
+				let max = cc.maxA;
+				for (let i=1; i<cc.F; i++) max*=cc.maxA;
+				
+				//перебираем
+				for (let i=0; i<max; i++) {
+					//получили номера
+					let vs = [];
+					for (let j=0; j<cc.F; j++) {
+						let a = 1;
+						for (let u=0; u<j; u++) a*=cc.maxA;
+						vs[j] = parseInt(i/a) % cc.maxA;
+					}
+					
+					//суммируем
+					ress[i] = {};
+					ress[i].ids = vs;
+					ress[i].top = 0;
+					ress[i].bottom = 0;
+					for (let j=0; j<cc.F; j++) {
+						for (let k=0; k<cc.C; k++) {
+							if (parseInt(mms[j][2][k]) == 0) ress[i].top+=parseFloat(temp[j][vs[j]][k]);
+							else ress[i].bottom+=parseFloat(temp[j][vs[j]][k]);
+						}
+					}
+					ress[i].ttl = ress[i].top/ress[i].bottom;
+					if (isNaN(ress[i].ttl)) ress[i].ttl = 0;
+				}
+			}
+			xres = ress.sort(function (a, b) {
+				if (a.ttl>b.ttl) {
+					return -1;
+				}
+				if (a.ttl<b.ttl) {
+					return 1;
+				}
+				  return 0;
+			});
+			xres.length = cc.maxR;
+			
+		}
+		catch(ex) {
+		}
+		
+		
+		let cvals = [];
+		for (let i=0; i<cc.F; i++) if (critters[i].length>0) {
+			cvals.push(renderTable({height:cc.C+1, width:cc.F+1, editable:true, editAlmostAll:false, editAll:false, c:vals[i], u:critters[i], n:names[i][0], l:names[i].slice(1)}));
+			cvals.push(renderTable({height:3, width:cc.F+1, editable:true, editAlmostAll:true, editAll:false, c:mms[i], u:[], l:cc2}));
+			cvals.push(Inferno.createElement('hr',{},));
+		}
+		//рендер относительных
+		let tvals = [];
+		try {
+			for (let i=0; i<cc.F; i++) if (critters[i].length>0) {
+				tvals.push(renderTable({height:cc.C+1, width:cc.F+1, editable:false, editAlmostAll:false, editAll:false, c:temp[i], u:critters[i], n:names[i][0], l:names[i].slice(1)}));
+				tvals.push(Inferno.createElement('hr',{},));
+			}
+		}
+		catch (ex) {
+		}
+		//рендер результата
+		let rvals;
+		{
+			let x = [];
+			for (let i=0; i<cc.maxR; i++) {
+				x.push([
+					xres[i].ttl.toFixed(1),
+					names[0][xres[i].ids[0]+1],
+					names[1][xres[i].ids[1]+1],
+					names[2][xres[i].ids[2]+1],
+					names[3][xres[i].ids[3]+1]
+				]);
+			}
+			let y = [];
+			y.push('Целевая функция');
+			for (let i=0; i<cc.F; i++) {
+				y.push(names[i][0]);
+			}
+			rvals = renderTable({height:cc.maxR+1, width:cc.F+1, editable:false, editAlmostAll:false, editAll:false, c:x, u:y, l:[]});
+		}
+		
+		let cont = Inferno.createElement('div',{},[
+			renderTable({height:cc.F, width:cc.maxA+1, editable:true, editAlmostAll:true, editAll:true, c:names, u:[], l:[]}),
+			Inferno.createElement('hr',{},),
+			Inferno.createElement('b',{style:'font-size:120%'},'Критерии',),
+			renderTable({height:cc.C, width:cc.F+1, editable:true, editAlmostAll:true, editAll:false, c:critters, u:[], l:names.map(function(s) {return s[0]})}),
+			Inferno.createElement('hr',{},),
+			Inferno.createElement('b',{style:'font-size:120%'},'Значения',),
+			cvals,
+			Inferno.createElement('hr',{},),
+			Inferno.createElement('b',{style:'font-size:120%'},'Численные значения критериев в относительных величинах',),
+			tvals,
+			Inferno.createElement('hr',{},),
+			Inferno.createElement('b',{style:'font-size:120%'},'Результаты',),
+			rvals,
+			Inferno.createElement('textarea',{style:'width:100%;height:10em',readonly:true,value:"localStorage.crit='"+localStorage.crit+"';localStorage.nns='"+localStorage.nns+"';localStorage.mms='"+localStorage.mms+"';localStorage.vals='"+localStorage.vals+"';"},),
+			'Копируете это дело и сохраняете где-то в нормальном месте. На другом компе открываете эту страницу, открываете консоль браузера (F12), вставляете, жмете Энтер. Обновляете страницу.',
+			]);
+			
+		Inferno.render(cont, document.getElementById('contInput'));
+		
+	</script>
+</html>
