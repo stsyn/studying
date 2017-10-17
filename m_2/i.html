@@ -157,7 +157,7 @@
 		
 		let temp2 = [[],[],[],[]];
 		let ctemp2 = [];
-		for (let i=0; i<cc.F*3; i++) ctemp2.push([]);
+		for (let i=0; i<cc.F; i++) ctemp2.push([]);
 		try {
 			//получение относительных
 			for (let i=0; i<cc.F; i++) {
@@ -166,8 +166,7 @@
 					for (let k=0; k<cc.C; k++) {
 						temp2[i][j][(mms[i][2][k]==1?'bottom':'top')] += temp[i][j][k];
 					}
-					ctemp2[i][j*3] = names[i][j+1];
-					ctemp2[i][j*3+1] = temp2[i][j].top+'/'+temp2[i][j].bottom;
+					ctemp2[i][j] = Inferno.createElement('span',{},[names[i][j+1]+' ',Inferno.createElement('b',{style:{float:'right'}}, temp2[i][j].top+'/'+temp2[i][j].bottom)]);
 				}
 			}
 		}
@@ -243,7 +242,7 @@
 		//рендер функции
 		let t2vals;
 		try {
-			t2vals = renderTable({height:cc.C, width:cc.F*3+1, editable:false, editAlmostAll:false, editAll:false, c:ctemp2, u:[], l:names.map(function (n) {return n[0]})});
+			t2vals = renderTable({height:cc.C, width:cc.F+1, editable:false, editAlmostAll:false, editAll:false, c:ctemp2, u:[], l:names.map(function (n) {return n[0]})});
 		}
 		catch (ex) {
 		}
