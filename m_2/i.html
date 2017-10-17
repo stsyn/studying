@@ -1,3 +1,4 @@
+
 <html>
 	<meta charset="utf-8">
 	<script src="inferno.min.js"></script>
@@ -11,6 +12,7 @@
 		<input type="button" value="Сохранить" onClick="save()"></input>
 		<input type="button" value="Минимумы и максимумы" onClick="minmaxs()"></input>
 		<div id="contInput">
+			Если вы видите этот текст, значит ваш браузер не поддерживает ES6 и Inferno. Используйте более свежий браузер (для WinXP таковым является Firefox)
 		</div>
 	</body>
 	<script>
@@ -153,6 +155,25 @@
 		catch(ex) {
 		}
 		
+		let temp2 = [[],[],[],[]];
+		let ctemp2 = [];
+		for (let i=0; i<cc.F*3; i++) ctemp2.push([]);
+		try {
+			//получение относительных
+			for (let i=0; i<cc.F; i++) {
+				for (let j=0; j<cc.maxA; j++) {
+					temp2[i][j] = {top:0, bottom:0};
+					for (let k=0; k<cc.C; k++) {
+						temp2[i][j][(mms[i][2][k]==1?'bottom':'top')] += temp[i][j][k];
+					}
+					ctemp2[i][j*3] = names[i][j+1];
+					ctemp2[i][j*3+1] = temp2[i][j].top+'/'+temp2[i][j].bottom;
+				}
+			}
+		}
+		catch(ex) {
+		}
+		
 		let xres;
 		try {
 			let ress = [];
@@ -218,6 +239,15 @@
 		}
 		catch (ex) {
 		}
+		
+		//рендер функции
+		let t2vals;
+		try {
+			t2vals = renderTable({height:cc.C, width:cc.F*3+1, editable:false, editAlmostAll:false, editAll:false, c:ctemp2, u:[], l:names.map(function (n) {return n[0]})});
+		}
+		catch (ex) {
+		}
+		
 		//рендер результата
 		let rvals;
 		{
@@ -251,10 +281,15 @@
 			Inferno.createElement('b',{style:'font-size:120%'},'Численные значения критериев в относительных величинах',),
 			tvals,
 			Inferno.createElement('hr',{},),
+			t2vals,
+			Inferno.createElement('hr',{},),
 			Inferno.createElement('b',{style:'font-size:120%'},'Результаты',),
 			rvals,
 			Inferno.createElement('textarea',{style:'width:100%;height:10em',readonly:true,value:"localStorage.crit='"+localStorage.crit+"';localStorage.nns='"+localStorage.nns+"';localStorage.mms='"+localStorage.mms+"';localStorage.vals='"+localStorage.vals+"';"},),
-			'Копируете это дело и сохраняете где-то в нормальном месте. На другом компе открываете эту страницу, открываете консоль браузера (F12 и ищете там вкладку "Консоль"), вставляете, жмете Энтер. Обновляете страницу.',
+			'Копируете это дело и сохраняете где-то в нормальном месте. На другом компе открываете эту страницу, открываете консоль браузера (F12 и ищете там вкладку "Консоль"), вставляете, жмете Энтер. Обновляете страницу.\n',
+			'Критерии-издержки должны в строке "Издержки" иметь значение 1. Проставлять необходимо вручную.',
+			Inferno.createElement('hr',{},),
+			'Разработано Бельским С.М. на нужды БПС-408 Ⓒ',
 			]);
 			
 		Inferno.render(cont, document.getElementById('contInput'));
