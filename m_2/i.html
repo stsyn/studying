@@ -289,7 +289,7 @@
 			Inferno.createElement('hr',{},),
 			Inferno.createElement('b',{style:'font-size:120%'},'Результаты',),
 			rvals,
-			Inferno.createElement('textarea',{style:'width:100%;height:10em',readonly:true,value:"localStorage.crit='"+localStorage.crit.replace(new RegExp('\\','g'), '\\\\')+"';localStorage.nns='"+localStorage.nns.replace(new RegExp('\\','g'), '\\\\')+"';localStorage.mms='"+localStorage.mms+"';localStorage.vals='"+localStorage.vals+"';'Данные успешно записаны, обновите страницу.'"},),
+			Inferno.createElement('textarea',{style:'width:100%;height:10em',readonly:true,value:"localStorage.crit='"+localStorage.crit.replace(new RegExp('\\\\','g'), '\\\\')+"';localStorage.nns='"+localStorage.nns.replace(new RegExp('\\\\','g'), '\\\\')+"';localStorage.mms='"+localStorage.mms+"';localStorage.vals='"+localStorage.vals+"';'Данные успешно записаны, обновите страницу.'"},),
 			'Копируете это дело и сохраняете где-то в нормальном месте. На другом компе открываете эту страницу, открываете консоль браузера (F12 и ищете там вкладку "Консоль" (Opera must die, как открыть консоль там - ищите сами)), вставляете, жмете Энтер. Обновляете страницу.\n',
 			Inferno.createElement('b',{},'Критерии-издержки (больше - хуже) должны в строке "Издержки" иметь значение 1. Проставлять необходимо вручную.'),
 			Inferno.createElement('hr',{},),
