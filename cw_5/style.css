@@ -28,6 +28,12 @@ body {
 	width:100%;
 	margin:auto;
 }
+body.overlay {
+	overflow:hidden;
+}
+.hidden {
+	display:none !important;
+}
 .pad {
 	display:inline-block;
 	vertical-align:top;
@@ -81,7 +87,7 @@ body {
 	color:#00f;
 }
 @media (max-width: 900px) {
-	#main, #sidebar {
+	#main, #sidebar, #nav {
 		position:static;
 		width:calc(100% - 80px);
 		max-width:calc(100% - 80px);
@@ -89,6 +95,54 @@ body {
 }
 img {
 	max-width:90%;
-	display:block;
+	display:inline-block;
 	margin:auto;
+}
+img.active {
+	cursor:pointer;
+}
+#overlay {
+	width:88vw;
+	height:88vh;
+	position:fixed;
+	top:0;
+	left:0;
+	padding:3vh 6vw 9vh 6vw;
+	background:rgba(255,255,255,.8);
+	display:none;
+	text-align:center;
+	cursor:pointer;
+}
+body.overlay #overlay {
+	display:block;
+}
+#overlayImg {
+	max-width:88vw;
+	margin:auto;
+	max-height:88vh;
+	vertical-align:middle;
+	display:inline-block;
+}
+#overlay>span {
+	position:fixed;
+	width:88vw;
+	bottom:2vh;
+	color:#111;
+	text-align:center;
+	z-index:2;
+	left:6vw;
+	font-size:150%;
+	font-weight:600;
+}
+#overlayNext, #overlayPrev {
+	position:fixed;
+	max-width:88vw;
+	display:inline-block;
+	max-height:88vh;
+}
+#overlayNext {
+	left:95vw;
+}
+#overlayPrev {
+	right:95vw;
 }

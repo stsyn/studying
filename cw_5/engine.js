@@ -1,7 +1,7 @@
 var content = {};
 var es = {};
 var map = [];
-var current = 'title', scrollspeed = 10;
+var current = 'title', scrollspeed = 7, overlayImgs = {};
 
 function addElem(tag, values, parent) {
 	if (values != undefined && values.id != undefined && document.getElementById(values.id) != undefined) return document.getElementById(values.id);
@@ -30,6 +30,34 @@ function compileMap() {
 	}
 }
 
+function postProcessor() {
+	var p = es.c.getElementsByTagName('p');
+	for (var i=0; i<p.length; i++) {
+		//image fit
+		if (p[i].innerHTML.indexOf('/combineImages')>-1) {
+			p[i].innerHTML = p[i].innerHTML.replace('/combineImages', '');
+			var im = p[i].getElementsByTagName('img');
+			for (var j=0; j<im.length; j++) {
+				im[j].style.width = 'calc('+100/im.length+'% - 1em)';
+			}
+		}
+		
+		//image zoom
+		if (p[i].innerHTML.indexOf('/zoomImages')>-1) {
+			p[i].innerHTML = p[i].innerHTML.replace('/zoomImages', '');
+			var im = p[i].getElementsByTagName('img');
+			for (var j=0; j<im.length; j++) {
+				im[j].addEventListener('click', function(e) {overlay(e.target)});
+				im[j].classList.add('active');
+				if (j>0) im[j].prev = im[j-1];
+				else im[j].prev = undefined;
+				if (j+1<im.length) im[j].next = im[j+1];
+				else im[j].next = undefined;
+			}
+		}
+	}
+}
+
 function render(id) {
 	scrollTo(0,0);
 	current = id;
@@ -42,6 +70,29 @@ function render(id) {
 	else es.prev.removeAttribute('href');
 	if (content[current].next != undefined) es.next.href = '#'+content[current].next;
 	else es.next.removeAttribute('href');
+	postProcessor();
+}
+
+function hideOverlay() {
+	document.body.classList.remove('overlay');
+}
+
+function overlay(img) {
+	es.oi.src = img.src;
+	es.od.innerHTML = img.alt;
+	overlayImgs.prev = img.prev;
+	overlayImgs.next = img.next;
+	if (overlayImgs.prev != undefined) {
+		es.oip.classList.remove('hidden');
+		es.oip.src = overlayImgs.prev.src;
+	}
+	else es.oip.classList.add('hidden');
+	if (overlayImgs.next != undefined) {
+		es.oin.classList.remove('hidden');
+		es.oin.src = overlayImgs.next.src;
+	}
+	else es.oin.classList.add('hidden');
+	document.body.classList.add('overlay');
 }
 
 function prevNav() {
@@ -52,22 +103,40 @@ function nextNav() {
 	setTimeout(function() {if (content[current].next != undefined) render(content[current].next)},1);
 }
 
+function overlayNextNav() {
+	if (overlayImgs.next == undefined) return;
+	setTimeout(function() {overlay(overlayImgs.next)},1);
+}
+
+function overlayPrevNav() {
+	if (overlayImgs.prev == undefined) return;
+	setTimeout(function() {overlay(overlayImgs.prev)},1);
+}
+
 function smoothScroll() {
 	scrollBy(0,-scrollspeed);
 	scrollspeed*=1.2;
 	if (window.pageYOffset == 0) scrollspeed=1;
-	else setTimeout(smoothScroll, 30);
+	else setTimeout(smoothScroll, 15);
 }
 
 document.addEventListener('DOMContentLoaded', function() {
 	es.c = document.getElementById('main');
 	es.m = document.getElementById('sidebar');
+	es.o = document.getElementById('overlay');
+	es.oi = document.getElementById('overlayImg');
+	es.oip = document.getElementById('overlayPrev');
+	es.oin = document.getElementById('overlayNext');
+	es.od = es.o.getElementsByTagName('span')[0];
 	es.t = document.getElementById('topNav');
 	es.prev = document.getElementById('leftNav');
 	es.next = document.getElementById('rightNav');
 	es.t.addEventListener('click', smoothScroll);
 	es.prev.addEventListener('click', prevNav);
 	es.next.addEventListener('click', nextNav);
+	es.o.addEventListener('click', hideOverlay);
+	es.oip.addEventListener('click', overlayPrevNav);
+	es.oin.addEventListener('click', overlayNextNav);
 	compileMap();
 	if (location.hash == '' || content[location.hash.slice(1)] == undefined) render('title');
 	else render(location.hash.slice(1));
