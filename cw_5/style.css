@@ -1,0 +1,94 @@
+@font-face {
+  font-family: 'OpenSans';
+  font-weight: 400;
+  src: url('content/media/open-sans/OpenSans-Regular.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'OpenSans';
+  font-weight: 400;
+  font-style: italic;
+  src: url('content/media/open-sans/OpenSans-Italic.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'OpenSans';
+  font-weight: 600;
+  font-style: italic;
+  src: url('content/media/open-sans/OpenSans-BoldItalic.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'OpenSans';
+  font-weight: 600;
+  src: url('content/media/open-sans/OpenSans-Bold.ttf') format('truetype');
+}
+
+body {
+	background:#eee;
+	font-family: 'OpenSans';
+	max-width:1500px;
+	width:100%;
+	margin:auto;
+}
+.pad {
+	display:inline-block;
+	vertical-align:top;
+	padding:20px;
+	margin:20px;
+	border-radius:20px;
+	background:#fff;
+	box-shadow:#000 0 0 20px;
+}
+#loader {
+	display:none;
+}
+#sidebar {
+	position:fixed;
+	width:calc(30vw - 80px);
+	max-width:370px;
+	font-size:18px;
+}
+#sidebar>a, #sidebar>a:visited,
+#nav>a, #nav>a:visited {
+	text-decoration:none;
+	transition:.1s;
+}
+#sidebar>a, #sidebar>a:visited {
+	color:#00f;
+	display:block;
+	padding:0.5em;
+}
+#sidebar>a.active {
+	color:#a0a;
+	background:rgba(0,0,0,0.1);
+}
+#sidebar>a:hover,
+#nav>a[href]:hover {
+	background:rgba(0,0,0,0.2);
+}
+#main, #nav {
+	float:right;
+	width:calc(70vw - 80px);
+	max-width:970px;
+	font-size:18px;
+}
+#nav>a, #nav>a:visited {
+	display:inline-block;
+	font-size:400%;
+	width:33%;
+	text-align:center;
+	color:#ddd;
+}
+#nav>a[href] {
+	color:#00f;
+}
+@media (max-width: 900px) {
+	#main, #sidebar {
+		position:static;
+		width:calc(100% - 80px);
+		max-width:calc(100% - 80px);
+	}
+}
+img {
+	max-width:90%;
+	display:block;
+	margin:auto;
+}
