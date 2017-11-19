@@ -28,8 +28,18 @@ body {
 	width:100%;
 	margin:auto;
 }
+pre {
+	display:inline;
+	background: #ddd;
+}
+h1 {
+	margin-top:0;
+}
 body.overlay {
 	overflow:hidden;
+}
+p {
+	text-align:justify;
 }
 .hidden {
 	display:none !important;
@@ -37,25 +47,27 @@ body.overlay {
 .pad {
 	display:inline-block;
 	vertical-align:top;
-	padding:20px;
 	margin:20px;
-	border-radius:20px;
 	background:#fff;
-	box-shadow:#000 0 0 20px;
+	box-shadow:#888 0 0 10px;
 }
 #loader {
 	display:none;
 }
 #sidebar {
 	position:fixed;
-	width:calc(30vw - 80px);
+	width:calc(30vw - 40px);
 	max-width:370px;
 	font-size:18px;
+	max-height:calc(100vh - 40px);
+	overflow-y:auto;
 }
 #sidebar a, #sidebar a:visited,
 #nav>a, #nav>a:visited {
 	text-decoration:none;
 	transition:.1s;
+}
+.l2c {
 }
 #sidebar a.l2{
 	margin-left:1em;
@@ -69,9 +81,15 @@ body.overlay {
 	color:#a0a;
 	background:rgba(0,0,0,0.1);
 }
+.l1:not(.active) + .l2c {
+	display:none !important;
+}
 #sidebar a:hover,
 #nav>a[href]:hover {
 	background:rgba(0,0,0,0.2);
+}
+#main {
+	padding:20px;
 }
 #main, #nav {
 	float:right;
@@ -81,22 +99,50 @@ body.overlay {
 }
 #nav{
 	text-align:center;
+	width:calc(70vw - 40px);
 }
 #nav>a, #nav>a:visited {
 	display:inline-block;
 	font-size:400%;
-	width:33%;
+	width:33.3%;
 	text-align:center;
 	color:#ddd;
 }
 #nav>a[href] {
 	color:#00f;
 }
+hr {
+	width:100%;
+}
+.fl_r {
+	float:right;
+	max-width:30%;
+	margin:0.5em 0 0.5em 1em;
+	padding:0.5em;
+	box-shadow:#888 0 0 10px;
+}
+.fl_r  > img {
+	margin:0;
+	padding:0;
+	width:100%;
+	max-width:100%;
+}
 @media (max-width: 900px) {
 	#main, #sidebar, #nav {
 		position:static;
 		width:calc(100% - 80px);
 		max-width:calc(100% - 80px);
+	}
+	#sidebar, #nav {
+		width:calc(100% - 40px);
+		max-width:calc(100% - 40px);
+		max-height:none;
+	}
+	.fl_r {
+		float:none;
+		width:calc(100% - 1em);
+		max-width:calc(100% - 1em);
+		margin:0.5em 0 0.5em 0;
 	}
 }
 img {
@@ -168,3 +214,7 @@ body.overlay #overlay {
 .label.active {
 	cursor:pointer;
 }
+
+/*
+	какой ужас
+*/
