@@ -52,21 +52,24 @@ body.overlay {
 	max-width:370px;
 	font-size:18px;
 }
-#sidebar>a, #sidebar>a:visited,
+#sidebar a, #sidebar a:visited,
 #nav>a, #nav>a:visited {
 	text-decoration:none;
 	transition:.1s;
 }
-#sidebar>a, #sidebar>a:visited {
+#sidebar a.l2{
+	margin-left:1em;
+}
+#sidebar a, #sidebar a:visited {
 	color:#00f;
 	display:block;
 	padding:0.5em;
 }
-#sidebar>a.active {
+#sidebar a.active {
 	color:#a0a;
 	background:rgba(0,0,0,0.1);
 }
-#sidebar>a:hover,
+#sidebar a:hover,
 #nav>a[href]:hover {
 	background:rgba(0,0,0,0.2);
 }
@@ -75,6 +78,9 @@ body.overlay {
 	width:calc(70vw - 80px);
 	max-width:970px;
 	font-size:18px;
+}
+#nav{
+	text-align:center;
 }
 #nav>a, #nav>a:visited {
 	display:inline-block;
@@ -95,8 +101,11 @@ body.overlay {
 }
 img {
 	max-width:90%;
-	display:inline-block;
+	display:block;
 	margin:auto;
+}
+img.oneLine {
+	display:inline-block;
 }
 img.active {
 	cursor:pointer;
@@ -111,7 +120,6 @@ img.active {
 	background:rgba(255,255,255,.8);
 	display:none;
 	text-align:center;
-	cursor:pointer;
 }
 body.overlay #overlay {
 	display:block;
@@ -122,6 +130,7 @@ body.overlay #overlay {
 	max-height:88vh;
 	vertical-align:middle;
 	display:inline-block;
+	cursor:pointer;
 }
 #overlay>span {
 	position:fixed;
@@ -133,16 +142,29 @@ body.overlay #overlay {
 	left:6vw;
 	font-size:150%;
 	font-weight:600;
+	user-select: none;    
 }
 #overlayNext, #overlayPrev {
 	position:fixed;
 	max-width:88vw;
 	display:inline-block;
 	max-height:88vh;
+	cursor:pointer;
 }
 #overlayNext {
 	left:95vw;
 }
 #overlayPrev {
 	right:95vw;
+}
+.labelsCont {
+	width:100%;
+}
+.label {
+	display:inline-block;
+	font-size:90%;
+	text-align:center;
+}
+.label.active {
+	cursor:pointer;
 }
