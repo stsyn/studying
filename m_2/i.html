@@ -168,7 +168,7 @@
 					for (let k=0; k<cc.C; k++) {
 						temp2[i][j][(mms[i][2][k]==1?'bottom':'top')] += temp[i][j][k];
 					}
-					ctemp2[i][j] = Inferno.createElement('span',{},[names[i][j+1]+' ',Inferno.createElement('b',{style:{float:'right'}}, temp2[i][j].top+'/'+temp2[i][j].bottom)]);
+					ctemp2[i][j] = Inferno.createElement('span',{},[Inferno.createElement('span',{style:{verticalAlign:'middle'}},names[i][j+1]+' '),Inferno.createElement('b',{style:{float:'right'}}, temp2[i][j].top+'/'+temp2[i][j].bottom)]);
 				}
 			}
 		}
