@@ -100,11 +100,12 @@ p {
 #nav{
 	text-align:center;
 	width:calc(70vw - 40px);
+	max-width:1010px;
 }
 #nav>a, #nav>a:visited {
 	display:inline-block;
 	font-size:400%;
-	width:33.3%;
+	width:33.33%;
 	text-align:center;
 	color:#ddd;
 }
@@ -126,24 +127,6 @@ hr {
 	padding:0;
 	width:100%;
 	max-width:100%;
-}
-@media (max-width: 900px) {
-	#main, #sidebar, #nav {
-		position:static;
-		width:calc(100% - 80px);
-		max-width:calc(100% - 80px);
-	}
-	#sidebar, #nav {
-		width:calc(100% - 40px);
-		max-width:calc(100% - 40px);
-		max-height:none;
-	}
-	.fl_r {
-		float:none;
-		width:calc(100% - 1em);
-		max-width:calc(100% - 1em);
-		margin:0.5em 0 0.5em 0;
-	}
 }
 img {
 	max-width:90%;
@@ -214,7 +197,57 @@ body.overlay #overlay {
 .label.active {
 	cursor:pointer;
 }
-
+.spoiler, .spoiler-borders {
+	position:absolute;
+	top:0;
+	opacity:0;
+	z-index:-1;
+	max-width:0;
+	height:0;
+}
+.spoiler.active,.spoiler:hover {
+	display:block;
+	background: #ddd;
+	top:auto;
+	height:auto;
+	z-index:1;
+	padding:20px;
+	margin-right:20px;
+	opacity:1;
+	max-width:calc(70vw - 160px);
+	min-width:40vw;
+	position:absolute;
+	margin-top:-.2em;
+}
+.spoiler-trigger{
+	text-decoration:none;
+	vertical-align: super;
+	font-size:80%;
+    height: 1.7em;
+    display: inline-block;
+}
+@media (max-width: 900px) {
+	#main, #sidebar, #nav {
+		position:static;
+		width:calc(100% - 80px);
+		max-width:calc(100% - 80px);
+	}
+	#sidebar, #nav {
+		width:calc(100% - 40px);
+		max-width:calc(100% - 40px);
+		max-height:none;
+	}
+	.fl_r {
+		float:none;
+		width:calc(100% - 1em);
+		max-width:calc(100% - 1em);
+		margin:0.5em 0 0.5em 0;
+	}
+	.spoiler.active,.spoiler:hover {
+		max-width:calc(100vw - 80px);
+		min-width:80vw;
+	}
+}
 /*
 	какой ужас
 */

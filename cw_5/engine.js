@@ -82,6 +82,7 @@ function compileMap() {
 function postProcessor() {
 	galleries = [];
 	var props = {};
+	var scount = 1;
 	var metaTags = ['zoomImages', 'combineImages', 'showLabels', 'continueGallery', 'fullGif', 'floatRight', 'applyToNext', 'nativeHTML', 'skipCurrent'];
 	var p = es.c.childNodes;
 	for (var i=0; i<p.length; i++) {	
@@ -97,7 +98,9 @@ function postProcessor() {
 		}
 		else props.applyToNext = false;
 		
-		console.log(i, props);
+		//Spoilers
+		p[i].innerHTML = p[i].innerHTML.replace(/\[spoiler\]/g, '<span class="spoiler">').replace(/\[\/spoiler\]/g, '</span>');
+	
 		
 		if (props.skipCurrent) {
 			props.skipCurrent = false;
@@ -108,7 +111,7 @@ function postProcessor() {
 	
 		//Override lt
 		if (props.nativeHTML) {
-			var s  = p[i].innerHTML.replace(new RegExp('&lt;','g'), '<');
+			var s = p[i].innerHTML.replace(new RegExp('&lt;','g'), '<');
 			p[i].innerHTML = s.replace(new RegExp('&gt;','g'), '>');
 		}
 	
@@ -196,6 +199,29 @@ function postProcessor() {
 			if (location.hostname+location.pathname == as[j].hostname+as[j].pathname) {
 				as[j].addEventListener('click', function(e) {renderWrapper(e,e.target.href.split('?')[1])});
 			}
+		}
+		
+		//EVERY links patching
+		for (var j=0; j<as.length; j++) {
+			as[j].target = "_blank";
+		}
+		
+		//spoilers
+		as = p[i].getElementsByClassName('spoiler');
+		for (var j=0; j<as.length; j++) {
+			p[i].insertBefore(InfernoAddElem('a',{innerHTML:'['+scount+']', href:'javascript://', className:'spoiler-trigger', events:[{t:'mouseenter', f:function(e) {
+				e.target.nextSibling.nextSibling.classList.add('active');
+				var x = e.target.nextSibling.nextSibling;
+				console.log(x.getBoundingClientRect().left+x.clientWidth);
+				if (x.getBoundingClientRect().left+x.clientWidth > document.documentElement.clientWidth) x.style.marginLeft = (document.documentElement.clientWidth-(x.getBoundingClientRect().left+x.clientWidth+10))+'px';
+				else x.style.marginLeft = auto;
+			}},{t:'mouseleave', f:function(e) {
+			console.log(e.target.nextSibling);
+				e.target.nextSibling.nextSibling.classList.remove('active');
+			}}]}), as[j]);
+			p[i].insertBefore(InfernoAddElem('span',{innerHTML:':(', className:'spoiler-borders'}), as[j]);
+			p[i].insertBefore(InfernoAddElem('span',{innerHTML:')', className:'spoiler-borders'}), as[j].nextSibling);
+			scount++;
 		}
 		
 		if (props.zoomImages && !props.continueGallery) galleries.push(gallery);
