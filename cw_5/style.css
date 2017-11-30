@@ -31,6 +31,7 @@ body {
 pre {
 	display:inline;
 	background: #ddd;
+	white-space: pre-wrap;
 }
 h1 {
 	margin-top:0;
