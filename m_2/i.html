@@ -276,7 +276,7 @@
 		}
     
     let prepareData = (data) => {
-      return (data || '').replace(new RegExp('\\','g'), '\\\\');
+      return (data || '').replace(/\\/g, '\\\\');
     }
 		
 		let cont = Inferno.createElement('div',{},[
