@@ -36,7 +36,7 @@ function postProcessing() {
   // clickable headers
   Array.from(documentMap.content.querySelectorAll('h1, h2, h3, h4, h5, h6'))
     .forEach(function (item) {
-      wrapElement(createElement('a.header-link', {href: '#' + item.id}), item);
+      wrapElement(item, 'a.header-link', {href: '#' + item.id});
     });
     
   // don't reload if the link is local
@@ -62,6 +62,39 @@ function postProcessing() {
       parent.insertBefore(createElement('span.spoiler-borders', ': ['), item);
       parent.insertBefore(last = createElement('span.spoiler-borders', ']'), item);
       parent.insertBefore(item, last);
+    });
+    
+  // image related
+  Array.from(documentMap.content.querySelectorAll('p'))
+    .forEach(function (item) {
+      var flags = {};
+      Array.from(item.childNodes).filter(function (node) {
+        return node instanceof Text;
+      }).forEach(function (node) {
+        if (node.wholeText.indexOf('/!floatRight ') > -1) {
+          flags.floatRight = true;
+          node.nodeValue = node.wholeText.replace('/!floatRight ', '');
+        }
+        
+        if (node.wholeText.indexOf('/!showLabels ') > -1) {
+          flags.showLabels = true;
+          node.nodeValue = node.wholeText.replace('/!showLabels ', '');
+        }
+      });
+      
+      if (flags.floatRight) {
+        Array.from(item.querySelectorAll('img')).forEach(function(image) {
+          wrapElement(image, 'div.image-wrapper.fl_r');
+        });
+      }
+      if (flags.showLabels) {
+        Array.from(item.querySelectorAll('img')).forEach(function(image) {
+          if (!image.parentNode.classList.contains('image-wrapper')) {
+            wrapElement(image, 'div.image-wrapper');
+          }
+          image.parentNode.appendChild(createElement('div.label', image.alt));
+        });
+      }
     });
 }
 
@@ -132,7 +165,15 @@ function castMenuIteration(position, container) {
 function sortIteration(node) {
   var childrenToSort = node._children.filter(function (item) {
     return !item.order;
-  }).sort();
+  }).sort(function (a, b) {
+    if (a.name < b.name) {
+      return -1;
+    }
+    if (a.name > b.name) {
+      return 1;
+    }
+    return 0;
+  });
   
   var childrenToInsert = node._children.filter(function (item) {
     return item.order;
@@ -148,12 +189,14 @@ function sortIteration(node) {
   
   var previous;
   node._children.forEach(function(item) {
-    if (previous) {
+    if (previous && item.content) {
       item._previous = previous;
       previous._next = item;
     }
     item._parent = node;
-    previous = item;
+    if (item.content) {
+      previous = item;
+    }
     sortIteration(item);
   });
 }

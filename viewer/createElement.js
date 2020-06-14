@@ -119,7 +119,21 @@ function createElement(tag, values, children) {
     return element;
 }
 
-function wrapElement(element, target) {
+function wrapElement(target, element, props) {
+    function isElement(obj) {
+        try {
+            return obj instanceof HTMLElement;
+        }
+        catch(e){
+            return (typeof obj==="object") &&
+                (obj.nodeType===1) && (typeof obj.style === "object") &&
+                (typeof obj.ownerDocument ==="object");
+        }
+    }
+    
+    if (!isElement(element)) {
+      element = createElement(element, props);
+    }
     var parent = target.parentNode;
     parent.insertBefore(element, target);
     element.appendChild(target);
